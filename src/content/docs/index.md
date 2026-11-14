@@ -1,6 +1,9 @@
 ---
 title: QVD File Format Specification
 description: An independent, open specification of the Qlik QVD file format.
+sidebar:
+  label: Overview
+  order: 1
 ---
 
 QVD (QlikView Data) is a proprietary file format by [Qlik](https://www.qlik.com/), used by
