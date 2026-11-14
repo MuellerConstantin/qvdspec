@@ -1,0 +1,98 @@
+---
+title: Index Table
+description: "Row layout, bit-packing, bias and NULL encoding of the QVD index table."
+sidebar:
+  label: Index table
+  order: 5
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import RecordLayout from '../../components/RecordLayout.astro';
+
+The index table holds the rows of a QVD table. Each row is stored as a record that contains,
+for every field, the index of the field's value in its [symbol table](../symbol-table/). The
+indices are bit-packed, so that each field only takes up as many bits as it needs.
+
+## Records
+
+The index table is a sequence of `NoOfRecords` records, each `RecordByteSize` bytes long. The
+records are stored in row order without any header, padding or separator, so the first record
+is the first row of the table. Both values, as well as the position of the index table, are
+given in the [table header](../header/#table-header).
+
+## Bit layout
+
+A record is a little-endian unsigned integer of `RecordByteSize` bytes: the first byte holds
+bits 0 to 7, the second byte bits 8 to 15, and so on. Within this integer, each field occupies
+`BitWidth` consecutive bits, starting at bit `BitOffset`. Both values are given in the field's
+[field header](../header/#field-header).
+
+The value stored for a field is therefore:
+
+```text
+stored value = (record >> BitOffset) & (2^BitWidth - 1)
+```
+
+The following example shows a record of a table with three fields. The record is two bytes long
+and is shown as an integer, with the most significant bit on the left. In the file, the bytes
+appear in the reverse order, starting with byte 0: `83 12`.
+
+<RecordLayout />
+
+In all observed files:
+
+- the bits of all fields together fill the record completely, i.e. the sum of all `BitWidth`
+  values equals `RecordByteSize × 8`,
+- the fields are not necessarily arranged in the order of the fields in the header, and
+- `BitWidth` is not necessarily the smallest number of bits that can hold all indices of a
+  field.
+
+## Symbol index and bias
+
+The index of a symbol is calculated from the stored value by adding the field's `Bias`:
+
+```text
+index = stored value + Bias
+```
+
+The index refers to the symbol with this number in the field's symbol table, counted from `0`.
+In all observed files without NULL values, `Bias` is `0`, so that the stored value is the index
+itself.
+
+## NULL
+
+NULL is not stored as a symbol. Instead, a row has the value NULL in a field if its index does
+not refer to a symbol of the field's symbol table. Two representations are in use:
+
+- **Negative index:** The field has a negative `Bias`, e.g. `-2`. A stored value that results in
+  a negative index represents NULL, while all other values are shifted accordingly.
+- **Index after the last symbol:** The field has a `Bias` of `0`, and NULL is stored as the
+  index `NoOfSymbols`, i.e. the first index after the last symbol.
+
+<Aside type="caution" title="Unverified">
+None of the observed files contains NULL values. Which representation is used by which
+software, and the meaning of specific negative indices, are not confirmed.
+</Aside>
+
+## Fields without bits
+
+A field with a `BitWidth` of `0` occupies no bits in the record. Its stored value is `0` in every
+row, so that every row refers to the same symbol, given by `Bias`. This applies to fields that
+contain the same value in every row.
+
+<Aside type="caution" title="Unverified">
+None of the observed files contains a field with a `BitWidth` of `0`.
+</Aside>
+
+## Example
+
+The record shown above is decoded as follows:
+
+| Field | `BitOffset` | `BitWidth` | Stored value | `Bias` | Index |
+| --- | --- | --- | --- | --- | --- |
+| `Customer` | 0 | 7 | 3 | 0 | 3 |
+| `Product` | 7 | 5 | 5 | 0 | 5 |
+| `Status` | 12 | 4 | 1 | 0 | 1 |
+
+The row therefore contains symbol 3 of the field `Customer`, symbol 5 of the field `Product`
+and symbol 1 of the field `Status`.
