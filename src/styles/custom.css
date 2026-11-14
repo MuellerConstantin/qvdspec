@@ -1,0 +1,12 @@
+/* Accent colour: green (dark theme is Starlight's default) */
+:root {
+	--sl-color-accent-low: #0b2e1b;
+	--sl-color-accent: #009845;
+	--sl-color-accent-high: #a8e2c0;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #c9ecd7;
+	--sl-color-accent: #007a37;
+	--sl-color-accent-high: #00401d;
+}

@@ -3,8 +3,6 @@ title: File Structure
 description: "Overall layout of a QVD file: XML header, symbol tables and index table."
 ---
 
-# File Structure
-
 A QVD file holds exactly one relational table: a fixed set of named columns (called *fields*)
 and any number of rows (called *records*). Each distinct value of a field is stored only once,
 which makes the format particularly compact for data with many repeated values, such as
@@ -36,7 +34,7 @@ binary signature; the file starts directly with the XML declaration of the heade
 
 The header is an XML document encoded in UTF-8. Besides describing the table and its fields,
 it tells a reader where each part of the binary data is located and how large it is. Its
-elements are described on the [Header](header.md) page.
+elements are described on the [Header](../header/) page.
 
 The header is terminated by a single NUL byte (`0x00`). The binary part begins at the byte
 immediately following it, and all positions given in the header are counted from there.
@@ -45,10 +43,10 @@ immediately following it, and all positions given in the header are counted from
 
 Each field has its own symbol table, which holds the distinct values of that field. The symbol
 tables of all fields are stored one after another at the beginning of the binary part. The
-encoding of the values is described on the [Symbol tables](symbol-table.md) page.
+encoding of the values is described on the [Symbol tables](../symbol-table/) page.
 
 ## Index table
 
 The index table follows the symbol tables and stores the rows of the table. Each row is a
 record of fixed size that holds, for every field, a reference to a value in that field's symbol
-table. The encoding of the records is described on the [Index table](index-table.md) page.
+table. The encoding of the records is described on the [Index table](../index-table/) page.

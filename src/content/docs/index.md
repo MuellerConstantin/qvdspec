@@ -3,8 +3,6 @@ title: QVD File Format Specification
 description: An independent, open specification of the Qlik QVD file format.
 ---
 
-# QVD File Format Specification
-
 QVD (QlikView Data) is a proprietary file format by [Qlik](https://www.qlik.com/), used by
 QlikView and Qlik Sense to store a single data table on disk. QVD files are commonly used as an
 intermediate storage layer in Qlik data pipelines, for example to cache extracted source data or
@@ -18,7 +16,7 @@ that reads and writes them. It does not use any non-public information from Qlik
 
 The goal is interoperability: to help other tools exchange data with QVD files, so that data
 stored in them remains accessible across different systems.
-The structure of a file is described on the [File structure](file-structure.md) page.
+The structure of a file is described on the [File structure](file-structure/) page.
 
 ## Conventions
 
@@ -27,8 +25,9 @@ The key words MUST, MUST NOT, SHOULD, SHOULD NOT and MAY are to be interpreted a
 
 Statements that are not yet confirmed are marked as follows:
 
-!!! warning "Unverified"
-    The described behaviour has not yet been confirmed.
+:::caution[Unverified]
+The described behaviour has not yet been confirmed.
+:::
 
 ## Disclaimer
 
