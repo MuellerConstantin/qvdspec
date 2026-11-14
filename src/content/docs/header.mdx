@@ -1,0 +1,206 @@
+---
+title: Header
+description: "The XML header of a QVD file: table and field header elements."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Every QVD file starts with an XML header. It describes the table as a whole, each of its
+fields, and where the data of the table is located in the binary part of the file.
+
+The root element `QvdTableHeader` contains general information about the table, one
+`QvdFieldHeader` per field and the position of the index table.
+
+## Example
+
+An abridged header of a table with two fields and 1,000 records:
+
+```xml title="Header (abridged)"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<QvdTableHeader>
+  <QvBuildNo>50689</QvBuildNo>
+  <CreatorDoc>5b7e6c22-0d2a-44e7-8c55-c345c8760cfc</CreatorDoc>
+  <CreateUtcTime>2026-01-05 14:37:21</CreateUtcTime>
+  <SourceCreateUtcTime></SourceCreateUtcTime>
+  <SourceFileUtcTime></SourceFileUtcTime>
+  <SourceFileSize>-1</SourceFileSize>
+  <StaleUtcTime></StaleUtcTime>
+  <TableName>TestData</TableName>
+  <Fields>
+    <QvdFieldHeader>
+      <FieldName>ID</FieldName>
+      <BitOffset>0</BitOffset>
+      <BitWidth>10</BitWidth>
+      <Bias>0</Bias>
+      <NumberFormat>
+        <Type>INTEGER</Type>
+        <nDec>0</nDec>
+        <UseThou>1</UseThou>
+        <Fmt>###0</Fmt>
+        <Dec>,</Dec>
+        <Thou></Thou>
+      </NumberFormat>
+      <NoOfSymbols>1000</NoOfSymbols>
+      <Offset>0</Offset>
+      <Length>5000</Length>
+      <Comment></Comment>
+      <Tags>
+        <String>$numeric</String>
+        <String>$integer</String>
+      </Tags>
+    </QvdFieldHeader>
+    <QvdFieldHeader>
+      <FieldName>Category</FieldName>
+      <!-- ... -->
+    </QvdFieldHeader>
+  </Fields>
+  <Compression></Compression>
+  <RecordByteSize>2</RecordByteSize>
+  <NoOfRecords>1000</NoOfRecords>
+  <Offset>5027</Offset>
+  <Length>2000</Length>
+  <Lineage>
+    <LineageInfo>
+      <Discriminator>AUTOGENERATE;</Discriminator>
+      <Statement></Statement>
+    </LineageInfo>
+  </Lineage>
+  <Comment></Comment>
+  <EncryptionInfo></EncryptionInfo>
+  <TableTags></TableTags>
+  <ProfilingData></ProfilingData>
+</QvdTableHeader>
+```
+
+## Encoding
+
+The header is a well-formed XML document encoded in UTF-8. Numeric values are written as
+decimal text. Elements without a value are written as an empty element, e.g.
+`<Comment></Comment>`.
+
+In all observed files, the elements appear in the order shown above.
+
+<Aside type="caution" title="Unverified">
+It is not confirmed whether the order of the elements matters to software that reads QVD
+files, or which elements may be omitted.
+</Aside>
+
+## Table header
+
+The direct children of `QvdTableHeader`:
+
+| Element | Content | Description |
+| --- | --- | --- |
+| `QvBuildNo` | integer | Build number of the software that wrote the file. |
+| `CreatorDoc` | text | Identifier of the document that wrote the file. Observed as a GUID. |
+| `CreateUtcTime` | timestamp | Time of creation in UTC, observed as `YYYY-MM-DD hh:mm:ss`. |
+| `SourceCreateUtcTime` | text | Observed empty. |
+| `SourceFileUtcTime` | text | Observed empty. |
+| `SourceFileSize` | integer | Observed as `-1`. |
+| `StaleUtcTime` | text | Observed empty. |
+| `TableName` | text | Name of the table. |
+| `Fields` | elements | One [`QvdFieldHeader`](#field-header) per field, in field order. |
+| `Compression` | text | Observed empty, see [Compression](#compression). |
+| `RecordByteSize` | integer | Size of one record of the index table in bytes. |
+| `NoOfRecords` | integer | Number of records, i.e. rows of the table. |
+| `Offset` | integer | Start of the index table, see [Positions](#positions-of-the-binary-data). |
+| `Length` | integer | Size of the index table in bytes. |
+| `Lineage` | elements | Origin of the data, see [Lineage](#lineage). |
+| `Comment` | text | Comment on the table. |
+| `EncryptionInfo` | – | Observed empty. |
+| `TableTags` | – | Observed empty. |
+| `ProfilingData` | – | Observed empty. |
+
+<Aside type="caution" title="Unverified">
+The meaning of `SourceCreateUtcTime`, `SourceFileUtcTime`, `SourceFileSize`, `StaleUtcTime`,
+`EncryptionInfo`, `TableTags` and `ProfilingData` is not confirmed. In all observed files they
+are empty or `-1`.
+</Aside>
+
+## Field header
+
+Each field of the table is described by a `QvdFieldHeader` inside `Fields`. The order of the
+`QvdFieldHeader` elements is the order of the columns of the table.
+
+| Element | Content | Description |
+| --- | --- | --- |
+| `FieldName` | text | Name of the field. |
+| `BitOffset` | integer | Position of the field's index within a record, in bits. |
+| `BitWidth` | integer | Number of bits of the field's index within a record. |
+| `Bias` | integer | Value added to the stored index, used to represent NULL. |
+| `NumberFormat` | elements | Display format of the field's values, see [Number format](#number-format). |
+| `NoOfSymbols` | integer | Number of distinct values in the field's symbol table. |
+| `Offset` | integer | Start of the field's symbol table, see [Positions](#positions-of-the-binary-data). |
+| `Length` | integer | Size of the field's symbol table in bytes. |
+| `Comment` | text | Comment on the field. |
+| `Tags` | elements | Tags of the field, see [Tags](#tags). |
+
+How `BitOffset`, `BitWidth` and `Bias` are used is described on the
+[Index table](../index-table/) page; the content of the symbol table on the
+[Symbol tables](../symbol-table/) page.
+
+### Number format
+
+`NumberFormat` describes how the values of a field are meant to be displayed. It does not
+affect how the values are stored: the values themselves are always taken from the symbol table.
+
+| Element | Content | Description |
+| --- | --- | --- |
+| `Type` | text | Kind of format, see below. |
+| `nDec` | integer | Number of decimal places. |
+| `UseThou` | `0` or `1` | Whether a thousands separator is used. |
+| `Fmt` | text | Format pattern, e.g. `###0`, `###0,00` or `DD.MM.YYYY`. |
+| `Dec` | text | Decimal separator. |
+| `Thou` | text | Thousands separator. |
+
+Observed values of `Type` are `UNKNOWN`, `INTEGER`, `FIX` and `DATE`. Software that writes
+QVD files also uses `REAL`, `MONEY`, `TIME`, `TIMESTAMP`, `INTERVAL` and `ASCII`.
+
+<Aside type="caution" title="Unverified">
+The complete set of `Type` values and the syntax of `Fmt` are not confirmed.
+</Aside>
+
+### Tags
+
+`Tags` contains any number of `String` elements, each holding one tag of the field. Observed
+tags are `$numeric`, `$integer`, `$text`, `$ascii`, `$date` and `$timestamp`. Like the number
+format, tags describe the values of a field but do not affect how they are stored.
+
+## Positions of the binary data
+
+The header contains `Offset` and `Length` elements at two levels:
+
+- In each `QvdFieldHeader`, they give the position and size of that field's symbol table.
+- Directly in `QvdTableHeader`, after `Fields`, they give the position and size of the index
+  table.
+
+All offsets are counted from the start of the binary part, i.e. from the byte following the
+NUL terminator of the header, not from the start of the file:
+
+```text
+position in file = size of the header in bytes + 1 + Offset
+```
+
+In all observed files, the symbol tables of all fields are stored without gaps in field order,
+and the index table follows directly after the last symbol table. Its `Length` equals
+`NoOfRecords × RecordByteSize`.
+
+## Compression
+
+The `Compression` element is empty in all observed files, and the binary part is stored
+uncompressed.
+
+<Aside type="caution" title="Unverified">
+The meaning of non-empty `Compression` values and the layout of compressed files are not
+confirmed.
+</Aside>
+
+## Lineage
+
+`Lineage` describes where the data of the table came from. It contains any number of
+`LineageInfo` elements:
+
+| Element | Content | Description |
+| --- | --- | --- |
+| `Discriminator` | text | Source of the data, e.g. `AUTOGENERATE;` for generated data. |
+| `Statement` | text | Statement that loaded the data. |
