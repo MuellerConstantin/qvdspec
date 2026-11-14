@@ -8,6 +8,10 @@ export default defineConfig({
 		starlight({
 			title: 'QVD File Format Specification',
 			description: 'An independent, open specification of the Qlik QVD file format.',
+			logo: {
+				light: './src/assets/logo-light.svg',
+				dark: './src/assets/logo-dark.svg',
+			},
 			customCss: ['./src/styles/custom.css'],
 			components: {
 				Footer: './src/components/Footer.astro',

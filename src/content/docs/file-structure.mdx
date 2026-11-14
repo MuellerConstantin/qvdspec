@@ -3,6 +3,8 @@ title: File Structure
 description: "Overall layout of a QVD file: XML header, symbol tables and index table."
 ---
 
+import FileLayout from '../../components/FileLayout.astro';
+
 A QVD file holds exactly one relational table: a fixed set of named columns (called *fields*)
 and any number of rows (called *records*). Each distinct value of a field is stored only once,
 which makes the format particularly compact for data with many repeated values, such as
@@ -15,20 +17,7 @@ binary signature; the file starts directly with the XML declaration of the heade
 
 ## Layout
 
-```text
-+------------------------------+
-| XML header                   |  text
-+------------------------------+
-| NUL terminator               |
-+------------------------------+
-| symbol table of field 1      |  binary
-| symbol table of field 2      |
-| ...                          |
-| symbol table of field n      |
-+------------------------------+
-| index table                  |
-+------------------------------+
-```
+<FileLayout />
 
 ## XML header
 
