@@ -1,6 +1,9 @@
 ---
 title: QVD File Format Specification
-description: An independent, open specification of the Qlik QVD file format.
+description: "An independent, open specification of the Qlik QVD (QlikView Data) file format, covering file structure, XML header, symbol tables and index table."
+head:
+  - tag: title
+    content: QVD File Format Specification | Open documentation of the Qlik QVD format
 sidebar:
   label: Overview
   order: 1
