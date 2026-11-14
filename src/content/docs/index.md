@@ -23,6 +23,8 @@ that reads and writes them. It does not use any non-public information from Qlik
 The goal is interoperability: to help other tools exchange data with QVD files, so that data
 stored in them remains accessible across different systems.
 The structure of a file is described on the [File structure](file-structure/) page.
+Open-source libraries that read and write QVD files are listed on the
+[Implementations](implementations/) page.
 
 ## Conventions
 

@@ -66,7 +66,8 @@ understanding of decisions and progress.
 To keep the specification consistent and trustworthy, please follow these conventions:
 
 - **Describe the format, not an implementation.** Do not refer to specific libraries or tools in
-  the specification. Describe differences in behaviour neutrally, e.g. "some readers …".
+  the specification. Describe differences in behaviour neutrally, e.g. "some readers …". Libraries
+  are only listed on the Implementations page.
 - **Do not guess.** Only document what is backed by observation or an existing implementation.
   Describe observations as such, e.g. "In all observed files, …".
 - **Mark open questions.** Statements that are not yet confirmed are marked with an aside:
