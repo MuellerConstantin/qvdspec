@@ -4,3 +4,16 @@ site_author: QVD Spec contributors
 copyright: >
   Not affiliated with or endorsed by Qlik.
   Qlik and QVD are trademarks of their respective owners.
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Overview: index.md
+  - File structure: file-structure.md
+  - Header: header.md
+  - Symbol tables: symbol-table.md
+  - Index table: index-table.md
