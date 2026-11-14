@@ -3,14 +3,25 @@ import Default from '@astrojs/starlight/components/Footer.astro';
 ---
 
 <Default><slot /></Default>
-<p class="disclaimer">
-	Not affiliated with or endorsed by Qlik. Qlik and QVD are trademarks of their respective owners.
-</p>
+<div class="legal">
+	<p>
+		Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>.
+	</p>
+	<p>
+		Not affiliated with or endorsed by Qlik. Qlik and QVD are trademarks of their respective owners.
+	</p>
+</div>
 
 <style>
-	.disclaimer {
+	.legal {
 		margin-top: 1.5rem;
 		font-size: var(--sl-text-xs);
 		color: var(--sl-color-gray-3);
+	}
+	.legal p + p {
+		margin-top: 0.25rem;
+	}
+	.legal a {
+		color: inherit;
 	}
 </style>
