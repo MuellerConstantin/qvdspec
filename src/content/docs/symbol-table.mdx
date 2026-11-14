@@ -1,0 +1,99 @@
+---
+title: Symbol Tables
+description: "Type bytes and value encodings of the QVD symbol tables."
+sidebar:
+  label: Symbol tables
+  order: 4
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import SymbolLayout from '../../components/SymbolLayout.astro';
+
+Each field of a QVD table has its own symbol table. It holds the distinct values of the field,
+called *symbols*. The rows of the table do not contain the values themselves but refer to a
+symbol by its position in the symbol table.
+
+## Structure
+
+A symbol table is a sequence of symbols without any header, padding or separator. Its position
+and size within the binary part are given by the `Offset` and `Length` of the field in the
+[header](../header/#field-header), and the number of symbols by `NoOfSymbols`.
+
+Symbols are numbered from `0` in the order in which they are stored. This number is the index
+that the records of the [index table](../index-table/) refer to.
+
+In all observed files:
+
+- each value occurs only once in a symbol table,
+- the symbols are stored in the order in which they first occur in the rows of the table, and
+- NULL is not stored as a symbol. How NULL is represented is described on the
+  [Index table](../index-table/) page.
+
+## Symbol types
+
+Each symbol starts with a type byte, followed by the value. The type byte determines how the
+value is encoded and therefore how many bytes the symbol occupies.
+
+| Type byte | Type | Value |
+| --- | --- | --- |
+| `0x01` | Integer | 32-bit signed integer |
+| `0x02` | Double | 64-bit floating point number |
+| `0x04` | String | Text, terminated by a NUL byte |
+| `0x05` | Dual integer | 32-bit signed integer, followed by a text terminated by a NUL byte |
+| `0x06` | Dual double | 64-bit floating point number, followed by a text terminated by a NUL byte |
+
+<SymbolLayout />
+
+The type of a symbol is determined by each symbol individually. A field may therefore contain
+symbols of different types. In the observed files, for example, a field with decimal amounts
+contains doubles, while whole amounts in the same field are stored as integers.
+
+<Aside type="caution" title="Unverified">
+It is not confirmed whether other type bytes, such as `0x03`, occur.
+</Aside>
+
+## Numbers
+
+Integers are 32-bit signed integers in two's complement. Doubles are 64-bit floating point
+numbers as defined by IEEE 754 (binary64). Both are stored in little-endian byte order.
+
+## Strings
+
+Strings are encoded in UTF-8 and terminated by a single NUL byte (`0x00`). There is no length
+prefix; the end of a string is given by the terminator only.
+
+<Aside type="caution" title="Unverified">
+It is not confirmed how empty strings are stored, or whether strings can contain a NUL
+character.
+</Aside>
+
+## Dual values
+
+A dual value combines a number with a text. The number is the value used for calculations,
+while the text is its display representation. Dual values are used for data that has both a
+numeric and a textual meaning, such as dates.
+
+For example, a date is stored as a dual integer with the number `44428` and the text
+`20.08.2021`. In the observed files, dates are stored as the number of days since
+`1899-12-30`, and the text is formatted according to the field's
+[number format](../header/#number-format).
+
+The number and the text of a dual value are stored independently of each other.
+
+## Example
+
+The symbol table of a field with the three values `Open`, `In Progress` and `Completed`
+consists of three strings, 30 bytes in total:
+
+```text title="Symbol table of a string field"
+04 4f 70 65 6e 00                                 → symbol 0: "Open"
+04 49 6e 20 50 72 6f 67 72 65 73 73 00            → symbol 1: "In Progress"
+04 43 6f 6d 70 6c 65 74 65 64 00                  → symbol 2: "Completed"
+```
+
+The symbol table of a field with the two values `0` and `1`, stored as dual integers:
+
+```text title="Symbol table of a dual integer field"
+05 00 00 00 00 30 00                              → symbol 0: 0, "0"
+05 01 00 00 00 31 00                              → symbol 1: 1, "1"
+```

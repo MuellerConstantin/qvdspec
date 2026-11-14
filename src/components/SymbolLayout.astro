@@ -1,0 +1,147 @@
+---
+/**
+ * Diagram of the byte layout of the symbol types of a QVD symbol table.
+ */
+---
+
+<div class="symbol-layout not-content" role="img" aria-label="Byte layout of the symbol types">
+	<div class="symbol">
+		<div class="name">Integer</div>
+		<div class="bytes">
+			<div class="byte type">01</div>
+			<div class="byte number">int32 (4 bytes)</div>
+		</div>
+	</div>
+	<div class="symbol">
+		<div class="name">Double</div>
+		<div class="bytes">
+			<div class="byte type">02</div>
+			<div class="byte number wide">float64 (8 bytes)</div>
+		</div>
+	</div>
+	<div class="symbol">
+		<div class="name">String</div>
+		<div class="bytes">
+			<div class="byte type">04</div>
+			<div class="byte text">UTF-8 text</div>
+			<div class="byte type">00</div>
+		</div>
+	</div>
+	<div class="symbol">
+		<div class="name">Dual integer</div>
+		<div class="bytes">
+			<div class="byte type">05</div>
+			<div class="byte number">int32 (4 bytes)</div>
+			<div class="byte text">UTF-8 text</div>
+			<div class="byte type">00</div>
+		</div>
+	</div>
+	<div class="symbol">
+		<div class="name">Dual double</div>
+		<div class="bytes">
+			<div class="byte type">06</div>
+			<div class="byte number wide">float64 (8 bytes)</div>
+			<div class="byte text">UTF-8 text</div>
+			<div class="byte type">00</div>
+		</div>
+	</div>
+
+	<div class="legend">
+		<span><span class="swatch type"></span>Type byte / terminator</span>
+		<span><span class="swatch number"></span>Number (little-endian)</span>
+		<span><span class="swatch text"></span>Text</span>
+	</div>
+</div>
+
+<style>
+	.symbol-layout {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-block: 1.5rem;
+		font-size: var(--sl-text-xs);
+	}
+	.symbol {
+		display: grid;
+		grid-template-columns: 7rem 1fr;
+		gap: 0.75rem;
+		align-items: center;
+	}
+	.name {
+		color: var(--sl-color-gray-2);
+		text-align: right;
+	}
+	.bytes {
+		display: flex;
+		width: fit-content;
+		max-width: 100%;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.375rem;
+		overflow-x: auto;
+	}
+	.byte {
+		padding: 0.375rem 0.5rem;
+		flex: none;
+		font-family: var(--sl-font-mono);
+		white-space: nowrap;
+	}
+	.byte + .byte {
+		border-left: 1px solid var(--sl-color-gray-5);
+	}
+	.byte.type {
+		width: 2.25rem;
+		text-align: center;
+		background: var(--sl-color-accent-low);
+		color: var(--sl-color-accent-high);
+	}
+	.byte.number {
+		background: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+	.byte.text {
+		padding-inline: 2.5rem;
+		background: var(--sl-color-bg);
+		color: var(--sl-color-gray-2);
+	}
+	.legend {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 0.5rem;
+		padding-left: 7.75rem;
+		color: var(--sl-color-gray-3);
+	}
+	.legend > span {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+	}
+	.swatch {
+		display: inline-block;
+		width: 1rem;
+		height: 0.75rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.125rem;
+	}
+	.swatch.type {
+		background: var(--sl-color-accent-low);
+	}
+	.swatch.number {
+		background: var(--sl-color-gray-6);
+	}
+	.swatch.text {
+		background: var(--sl-color-bg);
+	}
+	@media (max-width: 40rem) {
+		.symbol {
+			grid-template-columns: 1fr;
+			gap: 0.25rem;
+		}
+		.name {
+			text-align: left;
+		}
+		.legend {
+			padding-left: 0;
+		}
+	}
+</style>
