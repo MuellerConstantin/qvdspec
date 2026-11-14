@@ -3,7 +3,7 @@ title: QVD Implementations
 description: "Stable open-source libraries that read and write Qlik QVD files in Rust, Python and JavaScript, as reference implementations of the QVD format."
 sidebar:
   label: Implementations
-  order: 6
+  order: 8
 ---
 
 The following open-source libraries read and write QVD files and can serve as reference
