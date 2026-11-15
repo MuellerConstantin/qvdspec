@@ -44,8 +44,8 @@ correct, and files produced by other software or other versions may deviate from
 Use it at your own risk.
 
 If you can confirm or correct anything marked as unverified, please open an
-[issue](https://github.com/MuellerConstantin/qvd-spec/issues) or a
-[pull request](https://github.com/MuellerConstantin/qvd-spec/pulls).
+[issue](https://github.com/MuellerConstantin/qvdspec/issues) or a
+[pull request](https://github.com/MuellerConstantin/qvdspec/pulls).
 
 This project is not affiliated with or endorsed by Qlik. Qlik, QlikView, Qlik Sense and QVD
 are trademarks of their respective owners.

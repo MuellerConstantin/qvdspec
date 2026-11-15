@@ -22,4 +22,4 @@ their conformance to this specification.
 The list is limited to libraries that are stable, documented, published as a package and
 actively maintained, and that both read and write QVD files. Tools and integrations built on top
 of a library are not listed. To suggest a library, please open an
-[issue](https://github.com/MuellerConstantin/qvd-spec/issues).
+[issue](https://github.com/MuellerConstantin/qvdspec/issues).

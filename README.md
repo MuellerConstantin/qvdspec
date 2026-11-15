@@ -24,7 +24,8 @@ yet confirmed are marked as _unverified_ and are refined as new findings come in
 
 ## Website
 
-The specification is published as a website built with
+The specification is published at
+[qvdspec.org](https://qvdspec.org) as a website built with
 [Starlight](https://starlight.astro.build). Its content lives as Markdown/MDX files in
 [`src/content/docs`](src/content/docs).
 
@@ -40,8 +41,8 @@ _unverified_ are especially welcome. Please ensure that your contribution follow
 Clone the repository and install the dependencies. Make sure Node.js is installed.
 
 ```bash
-git clone https://github.com/MuellerConstantin/qvd-spec.git
-cd qvd-spec
+git clone https://github.com/MuellerConstantin/qvdspec.git
+cd qvdspec
 
 npm install
 ```
